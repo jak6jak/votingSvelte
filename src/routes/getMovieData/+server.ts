@@ -104,6 +104,7 @@ class UserMovieData {
 }
 
 import { MOVIE_DB_KEY } from '$env/static/private';
+import { error } from '@sveltejs/kit';
 
 export async function GET({ url }) {
     const movieTitle = url.searchParams.get('movieTitle');
@@ -140,7 +141,20 @@ export async function GET({ url }) {
 
 
     if(movieReturnData.length === 0){
-        return new Response("No movies found", {
+        const  returnObject = [
+            {
+            id: 0,
+           title: movieTitle,
+           overview: "Not Found",
+           poster_path: "",
+           genre_ids: [],
+           vote_average: 0,
+           release_date: "Unknown",
+           runtime: "Unkown",
+            }
+        ];
+        
+        return new Response(JSON.stringify(returnObject), {
             status: 404,
             headers: {
                 'content-type': 'text/plain;charset=UTF-8',

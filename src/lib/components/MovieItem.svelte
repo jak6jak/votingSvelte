@@ -31,10 +31,7 @@
 		class="flex flex-row mx-5 p-2 my-2 bg-white shrink md:sliced-border sm:sliced-input-border sm:border-0 md:border-100 drop-shadow-lg"
 	>
 		<div class="w-16 h-24 col-span-1 shrink-0 mx-1">
-			<img
-				alt="movie poster"
-				class="w-full h-full"
-			/>
+			<img alt="movie poster" class="w-full h-full" />
 		</div>
 		<div class="justify-center w-full">
 			<h1 class="text-xl text-ellipsis font-Cinzel font-bold">movieTitle</h1>
@@ -77,4 +74,31 @@
 			</button>
 		</div>
 	</div>
+{:catch error}
+	<div
+		class="flex flex-row mx-5 p-2 my-2 bg-white shrink md:sliced-border sm:sliced-input-border sm:border-0 md:border-100 drop-shadow-lg"
+	>
+		<div class="w-16 h-24 col-span-1 shrink-0 mx-1">
+			<img
+				alt="movie poster"
+				class="w-full h-full"
+			/>
+		</div>
+		<div class="justify-center w-full">
+			<h1 class="text-xl text-ellipsis font-Cinzel font-bold">{movieTitle}</h1>
+			<h1 class=" font-serif text-sm inline text-gray-600">Unknown</h1>
+			<br />
+			<p class=" font-serif text-sm inline text-gray-900">Unknown</p>
+
+			<p class=" font-serif text-base mr-5 max-w-prose line-clamp-6">Movie Not Found.</p>
+		</div>
+		<div class=" bg-cover">
+			<button
+				class="bg-[url('$lib/images/dots.webp')] min-w-8 min-h-8 bg-no-repeat hover:brightness-200 bg-contain"
+			>
+			</button>
+		</div>
+	</div>
+
+
 {/await}
