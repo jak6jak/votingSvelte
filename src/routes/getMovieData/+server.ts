@@ -92,26 +92,14 @@ interface IMovieData {
     runtime: number;
 }
 
-class UserMovieData {
-    title: string;
-    search_id: number;
-    hash_id: string;
-    constructor(title: string, search_id: number){
-        this.title = title;
-        this.search_id = search_id;
-        this.hash_id = title+search_id;
-    }
-}
-
 import { MOVIE_DB_KEY } from '$env/static/private';
-import { error } from '@sveltejs/kit';
 
 export async function GET({ url }) {
     const movieTitle = url.searchParams.get('movieTitle');
     console.log(movieTitle)
     if(movieTitle === null){
         
-        return new Response("No movie title provided", {
+        return new Response(JSON.stringify("No movie title provided"), {
             status: 400,
             headers: {
                 'content-type': 'text/plain;charset=UTF-8',
@@ -145,7 +133,7 @@ export async function GET({ url }) {
             {
             id: 0,
            title: movieTitle,
-           overview: "Not Found",
+           overview: "Movie Not Found",
            poster_path: "",
            genre_ids: [],
            vote_average: 0,

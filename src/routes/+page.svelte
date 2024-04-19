@@ -12,7 +12,7 @@
 	export let data;
 
 	/** @type {import('./$types').ActionData} */
-	export let form : ActionData;
+	export let form: ActionData;
 
 	let userMovieInput = '';
 	/*$: {
@@ -25,18 +25,20 @@
 	}
 */
 	$: {
+		//let movieJson = JSON.parse(form);
 		if (form?.movieData !== undefined) {
 			movieListStore.update((value) => {
-				console.log(JSON.parse(form?.movieData));
-				return [...value, JSON.parse(form?.movieData)];
+				console.log(form?.movieData);
+				return [...value, form?.movieData];
 			});
 		}
 	}
 	function handlePaste(event: ClipboardEvent) {
 		//pasted data now we fetch
-		userMovieInput = event.clipboardData?.getData('text');
-		if(userMovieInput === undefined) return;
-		let splitlist = userMovieInput.split('\n');
+		return;
+		let movieInput = event.clipboardData?.getData('text');
+		if (movieInput === undefined) return;
+		let splitlist = movieInput.split('\n');
 		movieListStore.update((value) => {
 			let returnValue: UserMovieData[] = [];
 			splitlist.forEach((element) => {
@@ -44,22 +46,16 @@
 			});
 			return [...value, ...returnValue];
 		});
+		console.log("hjeol")
+		userMovieInput = '';
 	}
 
 	movieListStore.subscribe((value) => {
 		//userMovieInputList = value;
 	});
-
-	let timer;
-	const debounce = (v) => {
-		clearTimeout(timer);
-		timer = setTimeout(() => {
-			userMovieInput = v;
-		}, 750);
-	};
 </script>
 
-<div class="w-screen h-screen bg-bluishblack">
+<div class="w-screen bg-bluishblack">
 	<div class="relative">
 		<img
 			class="relative container mx-auto size-1/4 object-center"
@@ -70,10 +66,13 @@
 	<label class=" text-zinc-100 font-serif text-center block pb-4 text-xl"
 		>Input /Paste Movies to vote on:</label
 	>
-	<div
-		class=" z-10 shadow flex sticky top-0 justify-center items-center mx-5 sliced-start-poll-border md:border-30 bg-bluishblack"
+	
+
+</div>
+<div
+		class=" z-10 shadow flex sticky top-0 justify-center items-center  sliced-start-poll-border md:border-30 bg-bluishblack"
 	>
-		<form method="POST" class="w-full flex" action="?/addMovies" use:enhance>
+		<form method="POST" class="w-full flex" action="?/addMovies" use:enhance >
 			<div class="flex">
 				<button
 					type="submit"
@@ -84,7 +83,7 @@
 			<div
 				class=" md:mx-5 hover:brightness-110 sticky grow top-0 sliced-input-border md:border-30 border-8"
 			>
-				<input name="movieInput" on:paste={handlePaste} class=" w-full h-full" />
+				<textarea name="movieInput" bind:value={userMovieInput} on:paste={handlePaste} class=" w-full h-full"  required autofocus ></textarea>
 			</div>
 			<div class="flex bg-transparent">
 				<button
@@ -94,8 +93,8 @@
 			</div>
 		</form>
 	</div>
-	<div class="bg-repeat-round bg-bluishblack">
-		<div class="flex flex-col items-center">
+	<div class="bg-repeat-round min-h-screen bg-bluishblack">
+		<div class="flex flex-col items-center px-5">
 			{#each $movieListStore as item}
 				<MovieItem movieTitle={item?.title} />
 			{/each}
@@ -103,4 +102,3 @@
 
 		<!--<object class="w-1/6 h-screen bg-repeat" data="hollyowwd lines.svg" type="image/svg+xml"></object> -->
 	</div>
-</div>

@@ -10,6 +10,15 @@ class UserMovieData {
         this.search_id = search_id;
         this.hash_id = title+search_id;
     }
+
+
+    toJSON(){
+        return {
+            title: this.title,
+            search_id: this.search_id,
+            hash_id: this.hash_id
+        }
+    }
 }
 
 
