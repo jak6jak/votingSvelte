@@ -15,19 +15,10 @@
 	export let form: ActionData;
 
 	let userMovieInput = '';
-	/*$: {
-		let splitList = userMovieInput.split('\n');
-		movieListStore.update(value => {
-			
-			return [...value,new UserMovieData(splitList[splitList.length-1],0)]
-			
-		})
-	}
-*/
 	$: {
 		//let movieJson = JSON.parse(form);
 		if (form?.movieData !== undefined) {
-		let splitlist = form?.movieData.split('\n').filter((element: String) => element !== '');
+		let splitlist = form?.movieData.split('\n');
 		movieListStore.update((value) => {
 			let returnValue: UserMovieData[] = [];
 			splitlist.forEach((element) => {
@@ -36,22 +27,6 @@
 			return [...value, ...returnValue];
 		});
 	}
-	}
-	function handlePaste(event: ClipboardEvent) {
-		//pasted data now we fetch
-		return;
-		let movieInput = event.clipboardData?.getData('text');
-		if (movieInput === undefined) return;
-		let splitlist = movieInput.split('\n');
-		movieListStore.update((value) => {
-			let returnValue: UserMovieData[] = [];
-			splitlist.forEach((element) => {
-				returnValue.push(new UserMovieData(element, 0));
-			});
-			return [...value, ...returnValue];
-		});
-		console.log("hjeol")
-		userMovieInput = '';
 	}
 
 	movieListStore.subscribe((value) => {
