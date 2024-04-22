@@ -90,9 +90,24 @@ interface IMovieData {
     vote_average: number;
     release_date: string;
     runtime: number;
+    vote_count: number;
 }
 
 import { MOVIE_DB_KEY } from '$env/static/private';
+
+function insertationSort(array: IMovieData[]) {
+    for (let i = 1; i < array.length; i++) {
+        let j = i - 1;
+        const temp = array[i];
+        while (j >= 0 && array[j].vote_count < temp.vote_count) {
+            array[j + 1] = array[j];
+            j--;
+        }
+        array[j + 1] = temp;
+    }
+    return array;
+
+}
 
 export async function GET({ url }) {
     const movieTitle = url.searchParams.get('movieTitle');
@@ -111,22 +126,24 @@ export async function GET({ url }) {
     const data = await fetch('https://api.themoviedb.org/3/search/movie?query=' + movieTitle + "&api_key=" + MOVIE_DB_KEY);
     const jsonData = await data.json();
     console.log(jsonData);
-    const movieReturnData: IMovieData[] = [];
+    let movieReturnData: IMovieData[] = [];
     for (const movie of jsonData.results) {
             const advancedMovieDetail = await (await fetch('https://api.themoviedb.org/3/movie/' + movie.id + "?api_key=" + MOVIE_DB_KEY)).json();
             //console.log(movieRuntime);
+            
             movieReturnData.push({
                     id: movie.id,
                     title: movie.title,
                     overview: movie.overview,
                     poster_path: movie.poster_path,
-                    genre_ids: advancedMovieDetail.genres.map((genre) => genres.genres.find((g) => g.id === genre.id)?.name),
+                    genre_ids: movie.genre_ids.map((genre: number) => genres.genres.find((g) => g.id === genre)?.name),
                     vote_average: movie.vote_average,
                     release_date: movie.release_date,
-                    runtime: advancedMovieDetail.runtime
+                    runtime: advancedMovieDetail.runtime,
+                    vote_count: movie.vote_count,
             });
     }
-
+    movieReturnData = insertationSort(movieReturnData);
 
     if(movieReturnData.length === 0){
         const  returnObject = [

@@ -27,11 +27,15 @@
 	$: {
 		//let movieJson = JSON.parse(form);
 		if (form?.movieData !== undefined) {
-			movieListStore.update((value) => {
-				console.log(form?.movieData);
-				return [...value, form?.movieData];
+		let splitlist = form?.movieData.split('\n').filter((element: String) => element !== '');
+		movieListStore.update((value) => {
+			let returnValue: UserMovieData[] = [];
+			splitlist.forEach((element) => {
+				returnValue.push(new UserMovieData(element, 0));
 			});
-		}
+			return [...value, ...returnValue];
+		});
+	}
 	}
 	function handlePaste(event: ClipboardEvent) {
 		//pasted data now we fetch
@@ -83,7 +87,7 @@
 			<div
 				class=" md:mx-5 hover:brightness-110 sticky grow top-0 sliced-input-border md:border-30 border-8"
 			>
-				<textarea name="movieInput" bind:value={userMovieInput} on:paste={handlePaste} class=" w-full h-full"  required autofocus ></textarea>
+				<textarea name="movieInput" bind:value={userMovieInput} on:paste={handlePaste} rows="1" class=" w-full h-full"  required autofocus ></textarea>
 			</div>
 			<div class="flex bg-transparent">
 				<button
@@ -95,7 +99,7 @@
 	</div>
 	<div class="bg-repeat-round min-h-screen bg-bluishblack">
 		<div class="flex flex-col items-center px-5">
-			{#each $movieListStore as item}
+			{#each $movieListStore as item (item.title)}
 				<MovieItem movieTitle={item?.title} />
 			{/each}
 		</div>
