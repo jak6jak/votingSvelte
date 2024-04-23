@@ -1,11 +1,13 @@
 <script lang="ts" type="module">
-	import { onMount } from 'svelte';
 	import { movieListStore } from '$lib/stores/stores';
+	import ChangeMovieItem from '$lib/components/ChangeMovieItem.svelte';
+	import { State } from '$lib';
+	import ViewMovieItem from './ViewMovieItem.svelte';
 	export let movieTitle = 'Error';
-
-	//let movieData : IMovieData[];
 	let movieIndex = 0;
-	let dropDownVisible = false;
+
+	let state = State.view;
+
 	function createURLSlug(text: string) {
 		return text
 			.toString() // Convert to string
@@ -18,6 +20,16 @@
 			.replace(/\-\-+/g, '-'); // Replace multiple hyphens with a single hyphen
 	}
 
+	function removeSelf() {
+		console.log('Removing: ' + movieTitle);
+		movieListStore.update((value) => {
+			return value.filter((element) => element.title !== movieTitle);
+		});
+	}
+	function changeMovie(event) {
+		movieIndex = event.detail.i;
+		state = State.view;
+	}
 	$: moviePromise = (async function getData(_movieTitle: string) {
 		console.log(_movieTitle);
 
@@ -26,104 +38,46 @@
 		console.log(movieData);
 		return movieData;
 	})(movieTitle);
-
-	function removeSelf() {
-		movieListStore.update((value) => {
-			return value.filter((element) => element.title !== movieTitle);
-		});
-	}
 </script>
 
 {#await moviePromise}
-	<div
-		class="flex flex-row mx-5 p-2 my-2 bg-white shrink md:sliced-border min-w-full sm:sliced-input-border sm:border-0 md:border-100 drop-shadow-lg"
-	>
-		<div class="w-16 h-24 col-span-1 shrink-0 mx-1">
-			<img alt="movie poster" class="w-full h-full" />
-		</div>
-		<div class="justify-center w-full">
-			<h1 class="text-xl text-ellipsis font-Cinzel font-bold">{movieTitle}</h1>
-			<h1 class=" font-serif text-sm inline text-gray-600">loading..</h1>
-			<br />
-			<p class=" font-serif text-sm inline text-gray-900">loading...</p>
-
-			<p class=" font-serif text-base mr-5 max-w-prose line-clamp-6">Still loading...</p>
-		</div>
-
-		<div class=" bg-cover">
-			<button
-				class="bg-[url('$lib/images/dots.webp')] min-w-8 min-h-8 bg-no-repeat hover:brightness-200 bg-contain"
-			>
-			</button>
-		</div>
-	</div>
+	<ViewMovieItem
+		{movieTitle}
+		UsermovieTitle={movieTitle}
+		poster_path={''}
+		runtime={0}
+		release_date={'Loading'}
+		genre_ids={['Loding']}
+		overview={'Loading Movie Data...'}
+	></ViewMovieItem>
 {:then data}
-	<div
-		class="flex flex-col mx-5 p-2 my-2 bg-white grow md:sliced-border min-w-full sm:sliced-input-border sm:border-0 md:border-100 drop-shadow-lg"
-	>
-		<div class="flex">
-			<div class="w-16 h-24 shrink-0 mx-1">
-				<img
-					src={`https://image.tmdb.org/t/p/w500/${data[movieIndex]?.poster_path}.jpeg`}
-					alt="movie poster"
-					class="w-full h-full"
-				/>
-			</div>
-			<div class="justify-center flex-col grow">
-				{#if data[movieIndex].title == undefined}
-					<h1 class="text-xl text-ellipsis font-Cinzel font-bold">{movieTitle}</h1>
-				{:else}
-					<h1 class="text-xl text-ellipsis font-Cinzel font-bold">{data[movieIndex].title}</h1>
-				{/if}
-				<h1 class=" font-serif text-sm inline text-gray-900">{data[movieIndex].runtime} min, {data[0].release_date.substring(0, 4)}</h1>
-				<br />
-				{#each data[movieIndex].genre_ids as item}
-					<p class=" font-serif text-sm inline text-gray-900">{item + ', '}</p>
-				{/each}
-				<br />
-			</div>
-
-
-		<div class=" bg-cover">
-			<button
-				on:click={() => {
-					dropDownVisible = !dropDownVisible;
-				}}
-				class="bg-[url('$lib/images/dots.webp')] min-w-8 min-h-8 bg-no-repeat hover:brightness-200 bg-contain"
-			>
-			</button>
-			{#if dropDownVisible}
-				<div
-					class="absolute top-5 bg-bluishblack border-8 sliced-start-poll-border divide-y shadow"
-				>
-					<button class="text-white outline-1" on:click={removeSelf}>Remove Movie</button>
-					<button class="text-white">Change Movie</button>
-				</div>
-			{/if}
-		</div>
-		</div>
-		<p class=" font-serif text-base mr-5 col-span-2 line-clamp-8">{data[movieIndex].overview}</p>
-	</div>
+	{#if state == State.view}
+		<ViewMovieItem
+			movieTitle={data[movieIndex].title}
+			UsermovieTitle={movieTitle}
+			poster_path={data[movieIndex]?.poster_path}
+			runtime={data[movieIndex].runtime}
+			release_date={data[movieIndex].release_date.substring(0, 4)}
+			genre_ids={data[movieIndex].genre_ids}
+			overview={data[movieIndex].overview}
+			on:changeMovie={() => {
+				state = State.edit;
+			}}
+			on:removeMovie={() => {
+				removeSelf();
+			}}
+		></ViewMovieItem>
+	{:else if state == State.edit}
+		<ChangeMovieItem MovieData={data} on:changeMovie={changeMovie}></ChangeMovieItem>
+	{/if}
 {:catch error}
-	<div
-		class="flex flex-row mx-5 p-2 my-2 bg-white shrink md:sliced-border sm:sliced-input-border sm:border-0 md:border-100 drop-shadow-lg"
-	>
-		<div class="w-16 h-24 col-span-1 shrink-0 mx-1">
-			<img alt="movie poster" class="w-full h-full" />
-		</div>
-		<div class="justify-center w-full">
-			<h1 class="text-xl text-ellipsis font-Cinzel font-bold">{movieTitle}</h1>
-			<h1 class=" font-serif text-sm inline text-gray-600">Unknown</h1>
-			<br />
-			<p class=" font-serif text-sm inline text-gray-900">Unknown</p>
-
-			<p class=" font-serif text-base mr-5 max-w-prose line-clamp-6">Movie Not Found.</p>
-		</div>
-		<div class=" bg-cover">
-			<button
-				class="bg-[url('$lib/images/dots.webp')] min-w-8 min-h-8 bg-no-repeat hover:brightness-200 bg-contain"
-			>
-			</button>
-		</div>
-	</div>
+	<ViewMovieItem
+		{movieTitle}
+		UsermovieTitle={movieTitle}
+		poster_path={''}
+		runtime={0}
+		release_date={'Not Found'}
+		genre_ids={['']}
+		overview={'No Movie Data Found'}
+	></ViewMovieItem>
 {/await}

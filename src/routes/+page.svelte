@@ -1,15 +1,11 @@
 <script lang="ts">
 	import heroImage from '$lib/images/movie-night-polls-2.gif';
-
 	import MovieItem from '$lib/components/MovieItem.svelte';
 	import { movieListStore } from '$lib/stores/stores';
 	import { UserMovieData } from '$lib/stores/stores';
 	import { enhance } from '$app/forms';
-	import Layout from './+layout.svelte';
 	import type { ActionData } from './$types';
-
-	/** @type {import('./$types').PageData} */
-	export let data;
+	import { State } from '$lib';
 
 	/** @type {import('./$types').ActionData} */
 	export let form: ActionData;
@@ -62,7 +58,7 @@
 			<div
 				class=" md:mx-5 hover:brightness-110 sticky grow top-0 sliced-input-border md:border-30 border-8"
 			>
-				<textarea name="movieInput" bind:value={userMovieInput} on:paste={handlePaste} rows="1" class=" w-full h-full"  required autofocus ></textarea>
+				<textarea name="movieInput" bind:value={userMovieInput} rows="1" class=" w-full h-full"  required autofocus ></textarea>
 			</div>
 			<div class="flex bg-transparent">
 				<button
@@ -75,7 +71,7 @@
 	<div class="bg-repeat-round min-h-screen bg-bluishblack">
 		<div class="flex flex-col items-center px-5">
 			{#each $movieListStore as item (item.title)}
-				<MovieItem movieTitle={item?.title} />
+				<MovieItem movieTitle={item?.title} state={State.view}/>
 			{/each}
 		</div>
 
