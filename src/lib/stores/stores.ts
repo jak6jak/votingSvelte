@@ -5,12 +5,15 @@ class UserMovieData {
     title: string;
     search_id: number;
     hash_id: string;
+    real_id: number = -1;
     constructor(title: string, search_id: number){
         this.title = title;
         this.search_id = search_id;
         this.hash_id = title+search_id;
     }
-
+    setRealId(real_id: number){
+        this.real_id = real_id;
+    }
 
     toJSON(){
         return {

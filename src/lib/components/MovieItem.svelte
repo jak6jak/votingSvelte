@@ -6,7 +6,7 @@
 	export let movieTitle = 'Error';
 	let movieIndex = 0;
 
-	let state = State.view;
+	export let state = State.view;
 
 	function createURLSlug(text: string) {
 		return text
@@ -34,6 +34,9 @@
 		console.log(_movieTitle);
 
 		const response = await fetch('/getMovieData?movieTitle=' + createURLSlug(_movieTitle));
+		if (response.status !== 200) {
+			throw new Error('Failed to fetch movie data');
+		}
 		let movieData: IMovieData[] = await response.json();
 		console.log(movieData);
 		return movieData;
@@ -77,7 +80,7 @@
 		poster_path={''}
 		runtime={0}
 		release_date={'Not Found'}
-		genre_ids={['']}
+		genre_ids={[]}
 		overview={'No Movie Data Found'}
 	></ViewMovieItem>
 {/await}
