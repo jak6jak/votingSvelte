@@ -7,16 +7,17 @@
 </script>
 
 <div
-	class="flex max-w-full flex-col mx-5 p-2 my-2 bg-white grow md:sliced-border  overflow-x-scroll min-w-full sm:sliced-input-border sm:border-0 md:border-100 drop-shadow-lg"
+	class="flex max-w-full flex-col mx-5 p-2 my-2 bg-white grow md:sliced-border  overflow-x-scroll min-w-full sm:sliced-input-border sm:border-0 md:border-50"
 >
-	<div class="grid grid-flow-col gap-6">
+<p>Choose different movie:</p>
+	<div class="flex flex-row gap-4 grow ">
 		{#each MovieData as movie, i}
         <button on:click={(e) => {
             dispatch('changeMovie', {i});
         }}>
-			<div class="p-5 min-w-64  border-30 sliced-start-poll-border">
+			<div class="lg:w-64 border-8 sliced-start-poll-border p-5">
 				<img
-					class="w-36 h-36 shrink-0 align-center"
+					class="md:w-36 md:h-36 align-center"
 					src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}.jpeg`}
 				/>
 				<p class="text-center">{movie.title}</p>

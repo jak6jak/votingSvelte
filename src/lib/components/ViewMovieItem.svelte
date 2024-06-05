@@ -24,7 +24,7 @@
 </script>
 
 <div
-	class="flex flex-col mx-5 p-2 my-2 bg-white grow md:sliced-border min-w-full sm:sliced-input-border sm:border-0 md:border-100 drop-shadow-lg"
+	class="flex flex-col mx-5 p-2 my-2 bg-white grow md:sliced-border min-w-full sm:sliced-input-border sm:border-0 lg:border-50 drop-shadow-lg"
 >
 	<div class="flex">
 		<div class="w-16 h-24 shrink-0 mx-1">
@@ -69,5 +69,4 @@
 			{/if}
 		</div>
 	</div>
-	<p class=" font-serif text-base mr-5 col-span-2 line-clamp-8">{overview}</p>
 </div>

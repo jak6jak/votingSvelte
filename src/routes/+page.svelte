@@ -79,7 +79,7 @@
 	</div>
 </div>
 <div class="bg-repeat-round min-h-screen bg-bluishblack">
-	<div class="flex flex-col items-center px-5">
+	<div class="flex flex-col items-center px-5 md:grid lg:grid-cols-2 md:gap-4 ">
 		{#each $movieListStore as item (item.title)}
 			<MovieItem movieTitle={item?.title} state={State.view} />
 		{/each}

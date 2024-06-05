@@ -9,7 +9,8 @@ export default {
     },
     borderWidth: {
       '100': '100px',
-      '30': '30px'
+      '30': '30px',
+      '50':'50px'
     },
     fontFamily: {
       'Garamond': ['EB Garamond'],
