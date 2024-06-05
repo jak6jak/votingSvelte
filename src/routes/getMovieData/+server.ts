@@ -148,7 +148,7 @@ export async function GET({ url }) {
     if(movieReturnData.length === 0){
         const  returnObject = [
             {
-            id: 0,
+            id: Math.floor(Math.random() * Number.MAX_SAFE_INTEGER),
            title: movieTitle,
            overview: "Movie Not Found",
            poster_path: "",

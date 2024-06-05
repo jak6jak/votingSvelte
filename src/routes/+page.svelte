@@ -12,7 +12,7 @@
 
 	$: {
 		//let movieJson = JSON.parse(form);
-		if (form?.movieData !== undefined) {
+		if (form?.movieData !== null && form?.movieData !== undefined) {
 			let splitlist = form?.movieData.split('\n');
 			movieListStore.update((value) => {
 				let returnValue: UserMovieData[] = [];
@@ -53,7 +53,6 @@
 				name="movieInput"
 				rows="1"
 				class=" w-full h-full"
-				required
 				autofocus
 				on:keydown={(e) => {
 					if (e.key === 'Enter' && !e.shiftKey) {
@@ -70,18 +69,19 @@
 				>+</button
 			>
 		</div>
-	</form>
+	
 	<div class="flex bg-transparent">
-		<button
-			class="brightness-100 bg-transparent sliced-start-poll-border font-Cinzel border-8 md:border-30 active:brightness-75 hover:brightness-110 min-h-16 min-w-16 md:min-h-32 md:min-w-32 text-white rounded-lg bg-center bg-cover bg-transparent"
+		<button formaction="?/createPoll"
+			class="brightness-100 sliced-start-poll-border font-Cinzel border-8 md:border-30 active:brightness-75 hover:brightness-110 min-h-16 min-w-16 md:min-h-32 md:min-w-32 text-white rounded-lg bg-center bg-transparent"
 			>Create Poll</button
 		>
 	</div>
+	</form>
 </div>
 <div class="bg-repeat-round min-h-screen bg-bluishblack">
 	<div class="flex flex-col items-center px-5 md:grid lg:grid-cols-2 md:gap-4 ">
-		{#each $movieListStore as item (item.title)}
-			<MovieItem movieTitle={item?.title} state={State.view} />
+		{#each $movieListStore as item (item.user_id)}
+			<MovieItem movieTitle={item?.title} state={State.view} movieFakeId={item.user_id} />
 		{/each}
 	</div>
 

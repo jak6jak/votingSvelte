@@ -9,6 +9,7 @@
 	export let release_date: String;
 	export let genre_ids : string[];
 	export let overview: string;
+	export let movieFound: boolean;
 	let dropDownVisible = false;
 
 
@@ -64,7 +65,9 @@
 					class="absolute top-5 bg-bluishblack border-8 sliced-start-poll-border divide-y shadow"
 				>
 					<button class="text-white outline-1" on:click={removeMovie}>Remove Movie</button>
+					{#if movieFound}
 					<button class="text-white" on:click={changeMovie}>Change Movie</button>
+					{/if}
 				</div>
 			{/if}
 		</div>

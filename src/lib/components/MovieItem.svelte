@@ -4,6 +4,7 @@
 	import { State } from '$lib';
 	import ViewMovieItem from './ViewMovieItem.svelte';
 	export let movieTitle = 'Error';
+	export let movieFakeId = -1;
 	let movieIndex = 0;
 
 	export let state = State.view;
@@ -23,7 +24,7 @@
 	function removeSelf() {
 		console.log('Removing: ' + movieTitle);
 		movieListStore.update((value) => {
-			return value.filter((element) => element.title !== movieTitle);
+			return value.filter((element) => element.user_id !== movieFakeId);
 		});
 	}
 	function changeMovie(event) {
@@ -35,10 +36,19 @@
 
 		const response = await fetch('/getMovieData?movieTitle=' + createURLSlug(_movieTitle));
 		if (response.status !== 200) {
+			
 			throw new Error('Failed to fetch movie data');
+
 		}
 		let movieData: IMovieData[] = await response.json();
-		console.log(movieData);
+		movieListStore.update((value) => {
+			let index = value.findIndex((element) => element.user_id === movieFakeId);
+			if (index !== -1) {
+				value[index].database_id = movieData[movieIndex].id;
+			}
+			return value;
+			
+		});
 		return movieData;
 	})(movieTitle);
 </script>
@@ -52,6 +62,7 @@
 		release_date={'Loading'}
 		genre_ids={['Loding']}
 		overview={'Loading Movie Data...'}
+		movieFound = {false}
 	></ViewMovieItem>
 {:then data}
 	{#if state == State.view}
@@ -63,6 +74,7 @@
 			release_date={data[movieIndex].release_date.substring(0, 4)}
 			genre_ids={data[movieIndex].genre_ids}
 			overview={data[movieIndex].overview}
+			movieFound = {true}
 			on:changeMovie={() => {
 				state = State.edit;
 			}}
@@ -82,5 +94,12 @@
 		release_date={'Not Found'}
 		genre_ids={[]}
 		overview={'No Movie Data Found'}
+		movieFound = {false}
+		on:changeMovie={() => {
+			state = State.edit;
+		}}
+		on:removeMovie={(id) => {
+			removeSelf();
+		}}
 	></ViewMovieItem>
 {/await}
