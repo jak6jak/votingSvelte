@@ -1,6 +1,7 @@
 <script lang="ts">
 	import heroImage from '$lib/images/movie-night-polls-2.gif';
 	import MovieItem from '$lib/components/MovieItem.svelte';
+	import PollTypeSelector from '$lib/components/PollTypeSelector.svelte';
 	import { movieListStore } from '$lib/stores/stores';
 	import { UserMovieData } from '$lib/stores/stores';
 	import { enhance } from '$app/forms';
@@ -27,6 +28,7 @@
 	movieListStore.subscribe((value) => {
 		//userMovieInputList = value;
 	});
+
 </script>
 
 <div class="w-screen bg-bluishblack">
@@ -44,7 +46,23 @@
 <div
 	class=" z-10 shadow flex sticky top-0 justify-center items-center sliced-start-poll-border md:border-30 bg-bluishblack"
 >
-	<form method="POST" class="w-full flex" action="?/addMovies" use:enhance>
+	<form method="POST" class="w-full flex" action="?/addMovies" use:enhance={({ formElement, formData, action, cancel, submitter }) => {
+		// `formElement` is this `<form>` element
+		// `formData` is its `FormData` object that's about to be submitted
+		// `action` is the URL to which the form is posted
+		// calling `cancel()` will prevent the submission
+		// `submitter` is the `HTMLElement` that caused the form to be submitted
+
+		return async ({ result, update }) => {
+			// `result` is an `ActionResult` object
+			// `update` is a function which triggers the default logic that would be triggered if this callback wasn't set
+			update({
+				formData: {
+					movieData: formData.get('movieInput')
+				}
+			});
+		};
+	}}>
 		
 		<div
 			class="hover:brightness-110 sticky grow top-0 sliced-input-border md:border-30 border-8 mx-1"
@@ -73,11 +91,12 @@
 	<div class="flex bg-transparent">
 		<button formaction="?/createPoll"
 			class="brightness-100 sliced-start-poll-border font-Cinzel border-8 md:border-30 active:brightness-75 hover:brightness-110 min-h-16 min-w-16 md:min-h-32 md:min-w-32 text-white rounded-lg bg-center bg-transparent"
-			>Create Poll</button
+			>Select Poll Type</button
 		>
 	</div>
 	</form>
 </div>
+
 <div class="bg-repeat-round min-h-screen bg-bluishblack">
 	<div class="flex flex-col items-center px-5 md:grid lg:grid-cols-2 md:gap-4 ">
 		{#each $movieListStore as item (item.user_id)}

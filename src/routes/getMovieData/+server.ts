@@ -125,7 +125,7 @@ export async function GET({ url }) {
     
     const data = await fetch('https://api.themoviedb.org/3/search/movie?query=' + movieTitle + "&api_key=" + MOVIE_DB_KEY);
     const jsonData = await data.json();
-    console.log(jsonData);
+    //console.log(jsonData);
     let movieReturnData: IMovieData[] = [];
     for (const movie of jsonData.results) {
             const advancedMovieDetail = await (await fetch('https://api.themoviedb.org/3/movie/' + movie.id + "?api_key=" + MOVIE_DB_KEY)).json();
