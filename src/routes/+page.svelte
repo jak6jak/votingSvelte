@@ -4,13 +4,20 @@
 	import PollTypeSelector from '$lib/components/PollTypeSelector.svelte';
 	import { movieListStore } from '$lib/stores/stores';
 	import { UserMovieData } from '$lib/stores/stores';
+	import SuperDebug from 'sveltekit-superforms';
 	import { enhance } from '$app/forms';
 	import type { ActionData } from './$types';
 	import { State } from '$lib';
 
-	/** @type {import('./$types').ActionData} */
-	export let form: ActionData;
+	import {superForm} from 'sveltekit-superforms';
 
+	export let data;
+
+	const {form, errors, constraints, message}= superForm(data.form);
+
+	/** @type {import('./$types').ActionData} */
+	//export let form: ActionData;
+	/*
 	$: {
 		//let movieJson = JSON.parse(form);
 		if (form?.movieData !== null && form?.movieData !== undefined) {
@@ -28,9 +35,9 @@
 	movieListStore.subscribe((value) => {
 		//userMovieInputList = value;
 	});
-
+*/
 </script>
-
+<SuperDebug data={$form}/>
 <div class="w-screen bg-bluishblack">
 	<div class="relative">
 		<img
@@ -43,41 +50,20 @@
 		>Input / Paste Movies to vote on. Press + button to add movie(s) to poll:</label
 	>
 </div>
+
 <div
 	class=" z-10 shadow flex sticky top-0 justify-center items-center sliced-start-poll-border md:border-30 bg-bluishblack"
 >
-	<form method="POST" class="w-full flex" action="?/addMovies" use:enhance={({ formElement, formData, action, cancel, submitter }) => {
-		// `formElement` is this `<form>` element
-		// `formData` is its `FormData` object that's about to be submitted
-		// `action` is the URL to which the form is posted
-		// calling `cancel()` will prevent the submission
-		// `submitter` is the `HTMLElement` that caused the form to be submitted
-
-		return async ({ result, update }) => {
-			// `result` is an `ActionResult` object
-			// `update` is a function which triggers the default logic that would be triggered if this callback wasn't set
-			update({
-				formData: {
-					movieData: formData.get('movieInput')
-				}
-			});
-		};
-	}}>
+	<form method="POST" class="w-full flex" action="?/addMovies" use:enhance>
 		
 		<div
 			class="hover:brightness-110 sticky grow top-0 sliced-input-border md:border-30 border-8 mx-1"
 		>
 			<textarea
-				name="movieInput"
+				name="MovieNames"
 				rows="1"
 				class=" w-full h-full"
-				autofocus
-				on:keydown={(e) => {
-					if (e.key === 'Enter' && !e.shiftKey) {
-						e.preventDefault();
-						e.target.form.dispatchEvent(new Event('submit'));
-					}
-				}}
+				autofocus bind:value={$form.MovieNames}
 			></textarea>
 		</div>
 		<div class="flex bg-transparent">
